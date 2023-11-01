@@ -100,3 +100,49 @@
   - cv.resize(입력 영상, 변환할 크기 지정)
     - dsize : 변환할 크기 지정 (dsize=(0,0)인 경우 fx,fy를 따른다는 의미)
     - fx=0.5, fy=0.5 : 가로와 세로 방향 모두 반으로 축소
+
+>## 웹 캠에서 비디오 읽기
+
+import cv2 as cv
+import sys
+
+# 카메라와 연결 시도
+cap = cv.VideoCapture(0, cv.CAP_DSHOW)
+
+if not cap.isOpened():
+    sys.exit("Fail to link to the camera")
+
+# 비디오를 구성하는 프레임 획득
+while True:
+    ret, frame = cap.read()
+
+      if not ret:
+          print("Fail to get frame, exiting loop")
+          break
+
+      cv.imshow('Video display', frame)
+
+      key = cv.waitKey(1)
+      if key == ord('q'):
+          break
+
+    cap.release()
+    cv.destroyAllWindows()
+
+
+      #카메라와 연결 끊음
+      cap release()
+      cv.destroyAllWindows() 
+
+  - while 문 : 10-20행을 무한 반복
+
+
+  - VideoCapture
+    - 웹 캠과 연결 시도하는 함수
+    - 첫 번째 인수 : 웹 캠 번호 (하나일 경우 0)
+    - 두 번째 인수 : 비디오가 화면에 바로 출력 
+
+ - ret,frame = cap.read()
+   - read함수 : 호출한 순간의 프레임을 획득
+   - ret에 획득 성공 여부 반환
+   - frame 객체에 프레임 저장  
