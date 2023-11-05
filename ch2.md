@@ -105,18 +105,18 @@
 
 >## 웹 캠에서 비디오 읽기
 
-import cv2 as cv
-import sys
+    import cv2 as cv
+    import sys
 
-# 카메라와 연결 시도
-cap = cv.VideoCapture(0, cv.CAP_DSHOW)
+    # 카메라와 연결 시도
+    cap = cv.VideoCapture(0, cv.CAP_DSHOW)
 
-if not cap.isOpened():
-    sys.exit("Fail to link to the camera")
+    if not cap.isOpened():
+      sys.exit("Fail to link to the camera")
 
-# 비디오를 구성하는 프레임 획득
-while True:
-    ret, frame = cap.read()
+    # 비디오를 구성하는 프레임 획득
+    while True:
+      ret, frame = cap.read()
 
       if not ret:
           print("Fail to get frame, exiting loop")
