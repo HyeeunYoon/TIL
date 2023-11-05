@@ -10,7 +10,8 @@
   - help(a) : a가 지닌 메서드의 정보(무슨 일을 하는지, 어떻게 사용하는지)를 알 수 있음
     - help(a.sort()) : sort()의 정보만 알 수 있음
 
-            numpy.ndarray 클래스 형의 객체를 만들고 멤버    함수 적용하기
+   - numpy.ndarray : numpy라이브러리에서 제공하는 다차원 배열 객체
+     
             import numpy as np
             a=np.array([4,5,0,1,2,3,6,7,8,9,10,11])
             print(a)
