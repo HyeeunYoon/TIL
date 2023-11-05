@@ -17,7 +17,7 @@
             print(a)
             print(type(a))
             print(a.shape)
-            a.sort()
+            a.sort() #sort() -> 정렬 함수
             print(a)
             b=np.array([-4,-3,-2.3,12.9,8.99,10.1,-1.2])
             b.sort()
@@ -95,6 +95,7 @@
 - cvtColor 함수 : 컬러 영상 -> 명암 영상
      -  cvtColor(입력 영상, 이미지를 그레이스케일로 변환)
      -  컬러 변환을 위한 일반화 식 
+        -  0.299와 같은 수는 상수이고 R,G,B는 현재 여기서 98,104,162에 해당
          ![Alt text](image-1.png)
      - cv.COLOR_BGR2GRAY : BGR로 표현된 컬러 영상을 명암으로 변환하라고 지시
 - resize 함수 : 영상의 크기를 변환
