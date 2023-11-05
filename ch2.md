@@ -226,3 +226,178 @@
       #RGB 순서로 받는 법 
       B,G,R = frames[0][0,0] #각각의 B,G,R값을 받아내어
       print(R,G,B) #하나씩 출력
+
+># 그래픽 기능과 사용자 인터페이스 만들기
+## 1) 영상에 도형을 그리고 글자 쓰기 
+: 지정된 좌표에 직사강형 도형과 글자 입히기
+          
+    import cv2 as cv
+    import numpy as np
+    import sys
+
+    img = cv.imread('catt.jpg')
+
+    if img is None:
+        sys.exit('failed to link photo')
+
+    cv.rectangle(img,(180,140),(400,400),(0,0,225),2)
+
+    cv.putText(img,'CAT FACE',(180,140),cv.FONT_HERSHEY_SIMPLEX,1,(255,0,0))
+    cv.imshow('cat',img)
+    cv.waitKey()
+    cv.destroyAllWindows()
+
+  - OpenCV 도형 제공 함수 
+    - line() : 직선
+    - rectangle() : 직사각형
+    - polylines() : 다각형
+    - circle() : 원
+    - ellipse : 타원
+  - OpenCV 문자열 제공 함수
+    - putText()
+
+- cv.rectangle(영상,직시각형 왼쪽 위 구석점 좌표,직사각형 오른쪽 아래 구석점 좌표,색깔,선 두께)
+
+- cv.putText(영상,작성 문자,폰트 종류,글자 크기,색,글자 두께)
+
+
+## 2)마우스로 클릭한 곳에 직사각형 그리기
+    import cv2 as cv
+    import numpy as np
+    import sys
+
+    img = cv.imread('catt.jpg')
+
+    if img is None:
+        sys.exit('failed to link photo')
+
+    #callback 함수
+    #x,y는 현재 이벤트가 발생된 좌표값
+    def draw(event,x,y,flags,param): 
+        #왼쪽버튼을 클릭한 경우 -> 클릭한 위치를 원점으로 하여 200,200짜리 직사각형 생성
+        if event == cv.EVENT_LBUTTONDOWN:
+            cv.rectangle(img,(x,y),(x+200,y+200),(0,0,255),3)
+        #오른쪽 버튼을 클릭한 경우 -> 클릭한 위치를 원점으로 하여 100,100짜리 직사각형 생성
+        elif event == cv.EVENT_RBUTTONDOWN:
+            cv.rectangle(img, (x, y), (x + 100, y + 100), (255, 0,0), 2)
+
+        # 직사각형이 그려진 img를 보여줌
+        cv.imshow('Drawing',img)
+
+    #처음에 보여지는 img
+    cv.imshow('Drawing',img)
+
+    #Drawing창에서 마우스 이벤트 발생 시 draw 콜백 함수 호출
+    cv.setMouseCallback('Drawing',draw)
+
+    #waitKey(1)를 무한반복 해줌으로써 실시간으로 변화하는 모습을 계속 보여줌
+    while(True):
+        if cv.waitKey(1) == ord('q'):
+            cv.destroyAllWindows()
+            break
+
+- callback 함수 : 다른 함수 내에서 어떤 이벤트가 발생했을 때 실행되도록 등록하는 함수
+- cv.setMouseCallback() : 마우스 이벤트를 처리하기 위한 함수 (클릭,이동,버튼 누름 등)
+- BUTTONDOWN
+  - LBUTTONDOWN : 왼쪽 버튼 클릭 이벤트
+  - RBUTTONDOWN : 오른쪽 버튼 클릭 이벤트
+
+
+## 3)마우스 드래그로 직사각형 그리기
+:콜백 함수인 draw함수를 수정해주면 된다. 
+
+    import cv2 as cv
+    import numpy as np
+    import sys
+
+    img = cv.imread('catt.jpg')
+
+    if img is None:
+        sys.exit('failed to link photo')
+
+    #callback 함수
+    def draw(event,x,y,flags,param):
+        #전역변수 ix,iy 생성
+        global ix,iy
+        #왼쪽 버튼 이벤트 발생일 경우
+        if event == cv.EVENT_LBUTTONDOWN:
+            ix,iy=x,y
+        elif event == cv.EVENT_LBUTTONUP:
+            cv.rectangle(img,(ix,iy),(x,y),(0,0,255),3)
+
+        #오른쪽 버튼 이벤트 발생일 경우
+        if event == cv.EVENT_RBUTTONDOWN:
+            ix,iy = x,y
+        elif event == cv.EVENT_RBUTTONUP:
+            cv.rectangle(img,(ix,iy),(x,y),(123,234,2),3)
+
+         # 직사각형이 그려진 img를 보여줌
+         cv.imshow('Drawing',img)       
+
+    #처음에 보여지는 img
+    cv.imshow('Drawing',img)
+
+    #Drawing창에서 마우스 이벤트 발생 시 draw 콜백 함수 호출
+    cv.setMouseCallback('Drawing',draw)
+
+    #waitKey(1)를 무한반복 해줌으로써 실시간으로 변화하는 모습을 계속 보여줌
+    while(True):
+        if cv.waitKey(1) == ord('q'):
+            cv.destroyAllWindows()
+            break
+
+
+>## 페인팅 기능 만들기 
+ : 콜백 함수 내부를 수정하면 가능해짐 
+
+    import cv2 as cv
+    import numpy as np
+    import sys
+
+    img = cv.imread('catt.jpg')
+
+    if img is None:
+        sys.exit('failed to link photo')
+
+    #브러시 크기(반지름)와 왼쪽 오른쪽 색깔 미리 설정
+    BrushSize = 5
+    LColor,RColor = (0,0,255) ,(255,0,0)
+
+    #callback 함수
+    def Painting(event,x,y,flags,param):
+        #왼쪽 버튼 이벤트 발생일 경우
+        if event == cv.EVENT_LBUTTONDOWN:
+            cv.circle(img,(x,y),BrushSize,LColor,-1)
+
+        #오른쪽 버튼 에빈트 발생일 경우
+        elif event == cv.EVENT_RBUTTONDOWN:
+            cv.circle(img,(x,y),BrushSize,RColor,-1)
+
+        #왼쪽 버튼을 누르며 마우스가 이동중인 경우
+        elif event == cv.EVENT_MOUSEMOVE and flags == cv.EVENT_FLAG_LBUTTON:
+            cv.circle(img,(x,y),BrushSize,LColor,-1)
+
+        #오른쪽 버튼을 누르며 마우스가 이동중인 경우
+        elif event == cv.EVENT_MOUSEMOVE and flags == cv.EVENT_FLAG_RBUTTON:
+            cv.circle(img,(x,y),BrushSize,RColor,-1)
+
+        # 직사각형이 그려진 img를 보여줌
+        cv.imshow('Painting',img)
+
+    #처음에 보여지는 img
+    cv.imshow('Painting',img)
+
+    #Painting창에서 마우스 이벤트 발생 시 Painting 콜백 함수 호출
+    cv.setMouseCallback('Painting',Painting)
+
+    #waitKey(1)를 무한반복 해줌으로써 실시간으로 변화하는 모습을 계속 보여줌
+    while(True):
+        if cv.waitKey(1) == ord('q'):
+            cv.destroyAllWindows()
+            break
+
+- cv.circle(이미지,원 가운데x,y좌표,원 반지름,색깔,두께)
+  -  두께 -1 : 원의 내부를 색으로 채워준다
+- if event == cv.EVENT_MOUSEMOVE and flags == cv.EVENT_FLAG_LBUTTON
+  - cv.EVENT_MOUSEMOVE : 현재 마우스가 이동 중인 상태를 의미
+  - flags = cv.EVENT_FLAG_LBUTTON : 왼쪽 마우스가 현재 눌려있는 상태를 의미
